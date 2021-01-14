@@ -71,7 +71,6 @@ export default {
             title: element.title,
             color: (index%2==0) ? '#005288' : '#a7a9ac'
           }
-          console.log(object)
           that.events.push(object)
         })
       })
