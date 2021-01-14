@@ -54,13 +54,18 @@ export default {
       items: [
         {
           icon: 'mdi-home',
-          title: 'Dashboard',
+          title: 'Home',
           to: '/'
         },
         {
           icon: 'mdi-history',
           title: 'Historical Events',
           to: '/historical_events'
+        },
+        {
+          icon: 'mdi-apps',
+          title: 'Dashboard',
+          to: '/dashboard'
         },
         {
           icon: 'mdi-table-large',

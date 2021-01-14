@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
+    "@svg-maps/usa": "^1.1.1",
+    "apexcharts": "^3.23.1",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "vue-apexcharts": "^1.6.0",
+    "vue-svg-map": "^1.2.0"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.2"
