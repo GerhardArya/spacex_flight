@@ -47,6 +47,11 @@ export default {
   components: {
     
   },
+  head() {
+    return {
+      title: "Historical Events"
+    };
+  },
   data () {
     return {
       events: [

@@ -2,71 +2,71 @@
   <v-row justify="center" align="center">
     <v-col cols="12">
       <v-row justify="start" align="center">
-        <v-col cols="6" class="px-1 py-3">
-          <v-card height="418">
+        <v-col cols="6" class="pl-3 pr-2 py-3">
+          <v-card height="44.5vh">
             <v-card-title class="headline">
               Total Launches
             </v-card-title>
             <v-card-text>
               <div id="chart1">
-                <apexchart type="line" height="325" :options="launchesChartOptions" :series="launchesSeries" ref="launchChart"></apexchart>
+                <apexchart type="line" :height="chartHeight" :options="launchesChartOptions" :series="launchesSeries" ref="launchChart"></apexchart>
               </div>
             </v-card-text>
           </v-card>
         </v-col>
         <v-col cols="3" class="px-1 py-3">
-          <v-card height="418">
+          <v-card height="44.5vh">
             <v-card-title class="headline">
               Launch Success Rate
             </v-card-title>
-            <div id="chart2">
-              <apexchart type="donut" :options="srChartOptions" :series="srSeries" ref="srChart"></apexchart>
+            <div id="chart2"> 
+              <apexchart type="donut" :height="chartHeight2" :options="srChartOptions" :series="srSeries" ref="srChart"></apexchart>
             </div>
           </v-card>
         </v-col>
-        <v-col cols="3" class="px-1 py-3">
-          <v-card height="418">
+        <v-col cols="3" class="pl-2 pr-3 py-3">
+          <v-card height="44.5vh">
             <v-card-title class="headline">
               Launch Locations
             </v-card-title>
             <div id="chart3">
-              <apexchart type="donut" :options="launchpadChartOptions" :series="launchpadSeries" ref="launchpadChart"></apexchart>
+              <apexchart type="donut" :height="chartHeight2" :options="launchpadChartOptions" :series="launchpadSeries" ref="launchpadChart"></apexchart>
             </div>
           </v-card>
         </v-col>
       </v-row>
       <v-row justify="start" align="center">
-        <v-col cols="6" class="px-1 py-3">
-          <v-card height="418">
+        <v-col cols="6" class="pl-3 pr-2 py-3">
+          <v-card height="44.5vh">
             <v-card-title class="headline">
               Total Payload Sent to Space (kg)
             </v-card-title>
             <v-card-text>
               <div id="chart4">
-                <apexchart type="line" height="325" :options="payloadChartOptions" :series="payloadSeries" ref="payloadChart"></apexchart>
+                <apexchart type="line" :height="chartHeight" :options="payloadChartOptions" :series="payloadSeries" ref="payloadChart"></apexchart>
               </div>
             </v-card-text>
           </v-card>
         </v-col>
         <v-col cols="3" class="px-1 py-3">
-          <v-card height="418">
+          <v-card height="44.5vh">
             <v-card-title class="headline">
               Rocket Type Success Rate
             </v-card-title>
             <v-card-text>
               <div id="chart5">
-                <apexchart type="bar" height="325" :options="rocketChartOptions" :series="rocketSeries" ref="rocketChart"></apexchart>
+                <apexchart type="bar" :height="chartHeight" :options="rocketChartOptions" :series="rocketSeries" ref="rocketChart"></apexchart>
               </div>
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="3" class="px-1 py-3">
-          <v-card height="418">
+        <v-col cols="3" class="pl-2 pr-3 py-3">
+          <v-card height="44.5vh">
             <v-card-title class="headline">
               Landing Locations
             </v-card-title>
             <div id="chart6">
-              <apexchart type="donut" :options="landpadChartOptions" :series="landpadSeries" ref="landpadChart"></apexchart>
+              <apexchart type="donut" :height="chartHeight2" :options="landpadChartOptions" :series="landpadSeries" ref="landpadChart"></apexchart>
             </div>
           </v-card>
         </v-col>
@@ -81,6 +81,11 @@ import VueApexCharts from 'vue-apexcharts'
 export default {
   components: {
     apexchart: VueApexCharts,
+  },
+  head() {
+    return {
+      title: "Dashboard"
+    };
   },
   data () {
     return {
@@ -102,7 +107,6 @@ export default {
       launchesChartOptions: {
         chart: {
           id: 'launchChart',
-          height: 350,
           type: 'line',
           toolbar: {
             show: true,
@@ -186,7 +190,7 @@ export default {
         },
         legend: {
           show: true,
-          position: 'bottom',
+          position: 'right',
           labels: {
             colors: '#FFFFFF',
             useSeriesColors: false
@@ -206,7 +210,7 @@ export default {
         },
         legend: {
           show: true,
-          position: 'bottom',
+          position: 'right',
           labels: {
             colors: '#FFFFFF',
             useSeriesColors: false
@@ -226,7 +230,7 @@ export default {
         },
         legend: {
           show: true,
-          position: 'bottom',
+          position: 'right',
           labels: {
             colors: '#FFFFFF',
             useSeriesColors: false
@@ -267,7 +271,6 @@ export default {
       payloadChartOptions: {
         chart: {
           id: 'payloadChart',
-          height: 350,
           type: 'line',
           toolbar: {
             show: true,
@@ -345,12 +348,26 @@ export default {
       rockets:[],
       launchpads: [],
       landpads: [],
+      chartHeight: 325,
     }
+  },
+  created() {
+    this.chartHeight = ((Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 64)/2)-111
+    this.chartHeight2 = ((Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 64)/2)-81
+    console.log(this.chartHeight)
+    window.addEventListener("resize", this.resizeHandler);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resizeHandler);
   },
   mounted(){
     this.init();
   },
   methods:{
+    resizeHandler(){
+      this.chartHeight = ((Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 64)/2)-111
+      this.chartHeight2 = ((Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 64)/2)-81
+    },
     init(){
       var that = this
       axios.get('https://api.spacexdata.com/v4/launches')
@@ -635,5 +652,18 @@ export default {
 .apexcharts-tooltip {
   background: #ffffff;
   color: black;
+}
+
+.container, .layout {
+  height: 100%;
+}
+
+.xs6 {
+  display: flex;
+  flex-direction: column;
+}
+
+.height {
+  flex: 1 1 auto;
 }
 </style>

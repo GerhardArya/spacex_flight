@@ -317,6 +317,11 @@ export default {
   components: {
     
   },
+  head() {
+    return {
+      title: "Data Overview"
+    };
+  },
   data () {
     return {
       capsuleHeaders: [

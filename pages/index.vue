@@ -3,7 +3,7 @@
     <v-col cols="12" sm="8" md="6">
       <v-card>
         <v-card-title class="headline">
-          Space-X Insight
+          SpaceX Insight
         </v-card-title>
         <v-img
           src="https://live.staticflickr.com/65535/50618463487_d05aef1611_3k.jpg"
@@ -52,6 +52,11 @@ const axios = require('axios');
 export default {
   components: {
     
+  },
+  head() {
+    return {
+      title: "Home"
+    };
   },
   data () {
     return {
