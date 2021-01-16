@@ -64,7 +64,7 @@
 							<v-row justify="center" align="center">
 								<v-img
   								max-height="160"
-  								max-width="120"
+  								:max-width="photoWidth"
   								:src="crew_photo"
 								></v-img>
 							</v-row>
@@ -118,10 +118,18 @@ export default {
 			crew_agency: '',
 			crew_status: '',
 			crew_photo: require('@/assets/placeholder_portrait.jpg'),
+			photoWidth: 0,
 			crew_launches: [],
 			crew_wiki: ''
 		}
 	},
+	created() {
+		this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-91.875
+    window.addEventListener("resize", this.resizeHandler);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resizeHandler);
+  },
 	mounted(){
 		var that = this
 		if(Object.keys(this.$route.params).length > 0){
@@ -143,6 +151,9 @@ export default {
 		}
 	},
 	methods: {
+		resizeHandler(){
+			this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-91.875
+    },
     loadCrew() {
 			var that = this
 			axios.get('https://api.spacexdata.com/v4/crew/'+this.crew_id)

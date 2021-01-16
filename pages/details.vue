@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
-      <v-card>
+      <v-card id="detailMain">
         <v-card-title class="headline">
           Detailed Information
         </v-card-title>

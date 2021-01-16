@@ -64,7 +64,7 @@
 							<v-row justify="center" align="center">
 								<v-img
   								max-height="160"
-  								max-width="200"
+  								:max-width="photoWidth"
   								:src="dragon_photo"
 								></v-img>
 							</v-row>
@@ -332,6 +332,7 @@ export default {
 			dragon_type: '',
 			dragon_status: '',
 			dragon_photo: require('@/assets/image_placeholder.png'),
+			photoWidth: 0,
 			dragon_first_flight: '',
 			dragon_crew_capacity: '',
 			dragon_orbit_duration: '',
@@ -352,6 +353,13 @@ export default {
 			dragon_wiki: ''
 		}
 	},
+	created() {
+		this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    window.addEventListener("resize", this.resizeHandler);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resizeHandler);
+  },
 	mounted(){
 		var that = this
 		if(Object.keys(this.$route.params).length > 0){
@@ -389,6 +397,9 @@ export default {
 		}
 	},
 	methods: {
+		resizeHandler(){
+			this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    },
     loadDragon() {
 			var that = this
 			axios.get('https://api.spacexdata.com/v4/dragons/'+this.dragon_id)

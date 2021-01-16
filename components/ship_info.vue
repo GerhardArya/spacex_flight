@@ -64,7 +64,7 @@
 							<v-row justify="center" align="center">
 								<v-img
   								max-height="160"
-  								max-width="200"
+  								:max-width="photoWidth"
   								:src="ship_photo"
 								></v-img>
 							</v-row>
@@ -327,7 +327,8 @@ export default {
 			ship_name: '',
 			ship_legacy_id: '',
 			ship_type: '',
-			ship_photo: '',
+			ship_photo: require('@/assets/image_placeholder.png'),
+			photoWidth: 0,
 			ship_model: '',
 			ship_year_built: '',
 			ship_home_port: '',
@@ -348,6 +349,13 @@ export default {
 			ship_link: '',
 		}
 	},
+	created() {
+		this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    window.addEventListener("resize", this.resizeHandler);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resizeHandler);
+  },
 	mounted(){
 		var that = this
 		if(Object.keys(this.$route.params).length > 0){
@@ -385,6 +393,9 @@ export default {
 		}
 	},
 	methods: {
+		resizeHandler(){
+			this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    },
     loadShip() {
 			var that = this
 			axios.get('https://api.spacexdata.com/v4/ships/'+this.ship_id)

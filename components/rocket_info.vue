@@ -64,7 +64,7 @@
 							<v-row justify="center" align="center">
 								<v-img
   								max-height="160"
-  								max-width="200"
+  								:max-width="photoWidth"
   								:src="rocket_photo"
 								></v-img>
 							</v-row>
@@ -695,6 +695,7 @@ export default {
 			rocket_type: '',
 			rocket_active: '',
 			rocket_photo: require('@/assets/image_placeholder.png'),
+			photoWidth: 0,
 			rocket_company: '',
 			rocket_country: '',
 			rocket_first_flight: '',
@@ -739,6 +740,13 @@ export default {
 			rocket_wikipedia: '',
 		}
 	},
+	created() {
+		this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    window.addEventListener("resize", this.resizeHandler);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resizeHandler);
+  },
 	mounted(){
 		var that = this
 		if(Object.keys(this.$route.params).length > 0){
@@ -811,6 +819,9 @@ export default {
 		}
 	},
 	methods: {
+		resizeHandler(){
+			this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    },
     loadRocket() {
 			var that = this
 			axios.get('https://api.spacexdata.com/v4/rockets/'+this.rocket_id)

@@ -64,7 +64,7 @@
 							<v-row justify="center" align="center">
 								<v-img
   								max-height="160"
-  								max-width="200"
+  								:max-width="photoWidth"
   								:src="launch_photo"
 								></v-img>
 							</v-row>
@@ -342,6 +342,7 @@ export default {
 			launch_flight_number: '',
 			launch_upcoming: '',
 			launch_photo: require('@/assets/image_placeholder.png'),
+			photoWidth: 0,
 			launch_launchpad: '',
 			launch_date: '',
 			launch_static_fire_date: '',
@@ -362,6 +363,13 @@ export default {
 			launch_auto_update: '',
 		}
 	},
+	created() {
+		this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    window.addEventListener("resize", this.resizeHandler);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resizeHandler);
+  },
 	mounted(){
 		var that = this
 		if(Object.keys(this.$route.params).length > 0){
@@ -399,6 +407,9 @@ export default {
 		}
 	},
 	methods: {
+		resizeHandler(){
+			this.photoWidth = (document.getElementById('detailMain').getBoundingClientRect().width)*0.25-31.875
+    },
     loadLaunch() {
 			var that = this
 			axios.get('https://api.spacexdata.com/v4/launches/'+this.launch_id)
