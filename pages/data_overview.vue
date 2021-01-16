@@ -6,10 +6,19 @@
           <v-card>
             <v-card-title class="headline">
               Capsules
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="capsuleSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="capsuleHeaders"
               :items="capsules"
+              :search="capsuleSearch"
               :items-per-page="5"
               :single-expand="true"
               :header-props="{ sortIcon: null }"
@@ -19,6 +28,9 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'capsule' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                   Last update: {{ item.last_update }}
@@ -31,10 +43,19 @@
           <v-card>
             <v-card-title class="headline">
               Cores
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="coreSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="coreHeaders"
               :items="cores"
+              :search="coreSearch"
               :items-per-page="5"
               :single-expand="true"
               :header-props="{ sortIcon: null }"
@@ -44,6 +65,9 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'core' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                   Last update: {{ item.last_update }}
@@ -58,10 +82,19 @@
           <v-card>
             <v-card-title class="headline">
               Crew
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="crewSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="crewHeaders"
               :items="crews"
+              :search="crewSearch"
               :items-per-page="5"
               :header-props="{ sortIcon: null }"
               dense
@@ -69,6 +102,9 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'crew' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:item.image="{item}">
                 <a target="_blank" :href="item.image">
                   <v-icon size="12px">{{ 'mdi-image' }}</v-icon>
@@ -86,10 +122,19 @@
           <v-card>
             <v-card-title class="headline">
               Dragons
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="dragonSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="dragonHeaders"
               :items="dragons"
+              :search="dragonSearch"
               :items-per-page="5"
               :single-expand="true"
               :header-props="{ sortIcon: null }"
@@ -99,6 +144,9 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'dragon' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:item.flickr_images="{item}">
                 <a target="_blank" :href="item.flickr_images">
                   <v-icon size="12px">{{ 'mdi-image' }}</v-icon>
@@ -122,11 +170,20 @@
         <v-col cols="6">
           <v-card>
             <v-card-title class="headline">
-              Landpads
+              Launches
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="launchSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
-              :headers="landpadHeaders"
-              :items="landpads"
+              :headers="launchHeaders"
+              :items="launches"
+              :search="launchSearch"
               :items-per-page="5"
               :single-expand="true"
               :header-props="{ sortIcon: null }"
@@ -136,6 +193,78 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'launch' } }">{{ item.id }}</NuxtLink>
+              </template>
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length">
+                  Description: {{ item.details }}
+                </td>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-col>
+        <v-col cols="6">
+          <v-card>
+            <v-card-title class="headline">
+              Launchpads
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="launchpadSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :headers="launchpadHeaders"
+              :items="launchpads"
+              :search="launchpadSearch"
+              :items-per-page="5"
+              :header-props="{ sortIcon: null }"
+              dense
+              fixed-header
+              height="21vh"
+              class="elevation-1"
+            >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'launchpad' } }">{{ item.id }}</NuxtLink>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row justify="start" align="center">
+        <v-col cols="6">
+          <v-card>
+            <v-card-title class="headline">
+              Landpads
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="landpadSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :headers="landpadHeaders"
+              :items="landpads"
+              :search="landpadSearch"
+              :items-per-page="5"
+              :single-expand="true"
+              :header-props="{ sortIcon: null }"
+              show-expand
+              dense
+              fixed-header
+              height="21vh"
+              class="elevation-1"
+            >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'landpad' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:item.wikipedia="{ item }">
                 <a target="_blank" :href="item.wikipedia">
                   <v-icon size="12px">{{ 'mdi-wikipedia' }}</v-icon>
@@ -152,24 +281,29 @@
         <v-col cols="6">
           <v-card>
             <v-card-title class="headline">
-              Launches
+              Payloads
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="payloadSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
-              :headers="launchHeaders"
-              :items="launches"
+              :headers="payloadHeaders"
+              :items="payloads"
+              :search="payloadSearch"
               :items-per-page="5"
-              :single-expand="true"
               :header-props="{ sortIcon: null }"
-              show-expand
               dense
               fixed-header
               height="21vh"
               class="elevation-1"
             >
-              <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length">
-                  Description: {{ item.details }}
-                </td>
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'payload' } }">{{ item.id }}</NuxtLink>
               </template>
             </v-data-table>
           </v-card>
@@ -179,64 +313,50 @@
         <v-col cols="6">
           <v-card>
             <v-card-title class="headline">
-              Launchpads
-            </v-card-title>
-            <v-data-table
-              :headers="launchpadHeaders"
-              :items="launchpads"
-              :items-per-page="5"
-              :header-props="{ sortIcon: null }"
-              dense
-              fixed-header
-              height="21vh"
-              class="elevation-1"
-            />
-          </v-card>
-        </v-col>
-        <v-col cols="6">
-          <v-card>
-            <v-card-title class="headline">
-              Payloads
-            </v-card-title>
-            <v-data-table
-              :headers="payloadHeaders"
-              :items="payloads"
-              :items-per-page="5"
-              :header-props="{ sortIcon: null }"
-              dense
-              fixed-header
-              height="21vh"
-              class="elevation-1"
-            />
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row justify="start" align="center">
-        <v-col cols="6">
-          <v-card>
-            <v-card-title class="headline">
               Fairings
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="fairingSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="fairingHeaders"
               :items="fairings"
+              :search="fairingSearch"
               :items-per-page="5"
               :header-props="{ sortIcon: null }"
               dense
               fixed-header
               height="21vh"
               class="elevation-1"
-            />
+            >
+              <template v-slot:item.serial="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.serial, type: 'fairing' } }">{{ item.serial }}</NuxtLink>
+              </template>
+            </v-data-table>
           </v-card>
         </v-col>
         <v-col cols="6">
           <v-card>
             <v-card-title class="headline">
               Rockets
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="rocketSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="rocketHeaders"
               :items="rockets"
+              :search="rocketSearch"
               :items-per-page="5"
               :single-expand="true"
               :header-props="{ sortIcon: null }"
@@ -246,6 +366,9 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'rocket' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:item.wikipedia="{ item }">
                 <a target="_blank" :href="item.wikipedia">
                   <v-icon size="12px">{{ 'mdi-wikipedia' }}</v-icon>
@@ -265,10 +388,19 @@
           <v-card>
             <v-card-title class="headline">
               Ships
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="shipSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="shipHeaders"
               :items="ships"
+              :search="shipSearch"
               :items-per-page="5"
               :header-props="{ sortIcon: null }"
               dense
@@ -276,6 +408,9 @@
               height="21vh"
               class="elevation-1"
             >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'ship' } }">{{ item.id }}</NuxtLink>
+              </template>
               <template v-slot:item.image="{ item }">
                 <a target="_blank" :href="item.image">
                   <v-icon size="12px">{{ 'mdi-image' }}</v-icon>
@@ -293,17 +428,30 @@
           <v-card>
             <v-card-title class="headline">
               Starlinks
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="starlinkSearch"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
             </v-card-title>
             <v-data-table
               :headers="starlinkHeaders"
               :items="starlinks"
+              :search="starlinkSearch"
               :items-per-page="5"
               :header-props="{ sortIcon: null }"
               dense
               fixed-header
               height="21vh"
               class="elevation-1"
-            />
+            >
+              <template v-slot:item.id="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'starlink' } }">{{ item.id }}</NuxtLink>
+              </template>
+            </v-data-table>
           </v-card>
         </v-col>
       </v-row>
@@ -324,6 +472,18 @@ export default {
   },
   data () {
     return {
+      capsuleSearch: '',
+      coreSearch: '',
+      crewSearch: '',
+      dragonSearch: '',
+      landpadSearch: '',
+      launchSearch: '',
+      launchpadSearch: '',
+      payloadSearch: '',
+      fairingSearch: '',
+      rocketSearch: '',
+      shipSearch: '',
+      starlinkSearch: '',
       capsuleHeaders: [
         {text: 'ID', align: 'start', sortable: true, value: 'id', width: "20%"},
         {text: 'Serial', align: 'start', sortable: true, value: 'serial', width: "12%"},

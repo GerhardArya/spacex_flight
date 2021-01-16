@@ -68,6 +68,11 @@ export default {
           to: '/dashboard'
         },
         {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Detailed Info',
+          to: '/details'
+        },
+        {
           icon: 'mdi-table-large',
           title: 'Data Overview',
           to: '/data_overview'

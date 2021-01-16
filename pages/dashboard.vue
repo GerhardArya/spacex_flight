@@ -354,7 +354,6 @@ export default {
   created() {
     this.chartHeight = ((Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 64)/2)-111
     this.chartHeight2 = ((Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 64)/2)-81
-    console.log(this.chartHeight)
     window.addEventListener("resize", this.resizeHandler);
   },
   destroyed() {
