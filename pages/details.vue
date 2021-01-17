@@ -133,6 +133,8 @@ export default {
     var that = this
     if(Object.keys(this.$route.params).length > 0) {
       that.objectType = that.$route.params.type
+    } else if(Object.keys(this.$route.query).length > 0) {
+      that.objectType = that.$route.query.type
     }
   },
   methods:{

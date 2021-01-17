@@ -310,7 +310,7 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					&emsp;
 					<b>Payloads:</b>
@@ -649,7 +649,7 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Description:</b>
 				</v-col>
@@ -668,13 +668,10 @@
     		<v-col cols="3">
 					<b>Wikipedia:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="rocket_wikipedia"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="rocket_wikipedia" target="_blank" v-if="rocket_wikipedia !== ''">
+						<v-icon size="20px">{{ 'mdi-wikipedia' }}</v-icon>
+					</a>
 				</v-col>
 			</v-row>
     </v-col>
@@ -749,72 +746,15 @@ export default {
   },
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'rocket') {
-				axios.get('https://api.spacexdata.com/v4/rockets/'+this.$route.params.id)
-      	.then(function (response) {
-					that.rocket_id = response.data.id
-					that.rocket_name = response.data.name
-					that.rocket_type = response.data.type
-					that.rocket_active = response.data.active
-					that.rocket_photo = response.data.flickr_images[0]
-					that.rocket_company = response.data.company
-					that.rocket_country = response.data.country
-					that.rocket_first_flight = response.data.first_flight
-					that.rocket_sr = response.data.success_rate_pct
-					that.rocket_cost = response.data.cost_per_launch
-					that.rocket_stages = response.data.stages
-					that.rocket_boosters = response.data.boosters
-					that.rocket_height = response.data.height.meters
-					that.rocket_diameter = response.data.diameter.meters
-					that.rocket_mass = response.data.mass.kg
-					that.rocket_first_stage_thrust_sea_level = response.data.first_stage.thrust_sea_level.kN
-					that.rocket_first_stage_thrust_vacuum = response.data.first_stage.thrust_vacuum.kN
-					that.rocket_first_stage_reusable = response.data.first_stage.reusable
-					that.rocket_first_stage_engines = response.data.first_stage.engines
-					that.rocket_first_stage_fuel_amount = response.data.first_stage.fuel_amount_tons
-					that.rocket_first_stage_burn_time = response.data.first_stage.burn_time_sec
-					that.rocket_second_stage_thrust = response.data.second_stage.thrust.kN
-					that.rocket_second_stage_payloads = JSON.stringify(response.data.second_stage.payloads, null, 2)
-					that.rocket_second_stage_reusable = response.data.second_stage.reusable
-					that.rocket_second_stage_engines = response.data.second_stage.engines
-					that.rocket_second_stage_fuel_amount = response.data.second_stage.fuel_amount_tons
-					that.rocket_second_stage_burn_time = response.data.second_stage.burn_time_sec
-					that.rocket_engines_isp_sea_level = response.data.engines.isp.sea_level
-					that.rocket_engines_isp_vacuum = response.data.engines.isp.vacuum
-					that.rocket_engines_thrust_sea_level = response.data.engines.thrust_sea_level.kN
-					that.rocket_engines_thrust_vacuum = response.data.engines.thrust_vacuum.kN
-					that.rocket_engines_number = response.data.engines.number
-					that.rocket_engines_type = response.data.engines.type
-					that.rocket_engines_version = response.data.engines.version
-					that.rocket_engines_layout = response.data.engines.layout
-					that.rocket_engines_max_loss = response.data.engines.engine_loss_max
-					that.rocket_engines_propellant1 = response.data.engines.propellant_1
-					that.rocket_engines_propellant2 = response.data.engines.propellant_2
-					that.rocket_engines_ttwr = response.data.engines.thrust_to_weight
-					that.rocket_landing_legs_number = response.data.landing_legs.number
-					that.rocket_landing_legs_material = response.data.landing_legs.material
-					if(response.data.payload_weights.length === 1) {
-							that.rocket_payload_leo = response.data.payload_weights[0].kg
-					} else if(response.data.payload_weights.length === 2) {
-						that.rocket_payload_leo = response.data.payload_weights[0].kg
-						that.rocket_payload_gto = response.data.payload_weights[1].kg
-					} else if(response.data.payload_weights.length === 3) {
-						that.rocket_payload_leo = response.data.payload_weights[0].kg
-						that.rocket_payload_gto = response.data.payload_weights[1].kg
-						that.rocket_payload_mars = response.data.payload_weights[2].kg
-					} else if(response.data.payload_weights.length === 4) {
-						that.rocket_payload_leo = response.data.payload_weights[0].kg
-						that.rocket_payload_gto = response.data.payload_weights[1].kg
-						that.rocket_payload_mars = response.data.payload_weights[2].kg
-						that.rocket_payload_pluto = response.data.payload_weights[3].kg
-					}
-					that.rocket_description = response.data.description
-					that.rocket_wikipedia = response.data.wikipedia
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'rocket') {
+				that.rocket_id = that.$route.params.id
+				that.loadRocket()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'rocket') {
+				that.rocket_id = that.$route.query.id
+				that.loadRocket()
 			}
 		}
 	},

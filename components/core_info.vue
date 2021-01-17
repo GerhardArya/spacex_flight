@@ -42,19 +42,14 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Launches:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="core_launches"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in core_launches" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
@@ -135,7 +130,7 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Last update:</b>
 				</v-col>
@@ -178,25 +173,15 @@ export default {
 	},
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'core') {
-				axios.get('https://api.spacexdata.com/v4/cores/'+this.$route.params.id)
-      	.then(function (response) {
-					that.core_id = response.data.id
-					that.core_serial = response.data.serial
-					that.core_status = response.data.status
-					that.core_launches = response.data.launches
-					that.core_block = response.data.block
-					that.core_rtls_attempts = response.data.rtls_attempts
-					that.core_rtls_landings = response.data.rtls_landings
-					that.core_asds_attempts = response.data.asds_attempts
-					that.core_asds_landings = response.data.asds_attempts
-					that.core_reuse = response.data.reuse_count
-					that.core_last_update = response.data.last_update
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'core') {
+				that.core_id = that.$route.params.id
+				that.loadCore()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'core') {
+				that.core_id = that.$route.query.id
+				that.loadCore()
 			}
 		}
 	},
@@ -207,7 +192,12 @@ export default {
       .then(function (response) {
 				that.core_serial = response.data.serial
 				that.core_status = response.data.status
-				that.core_launches = response.data.launches
+				response.data.launches.forEach(launchID => {
+					that.core_launches.push({
+						id: launchID,
+						link: "/details?id="+launchID+"&type=launch"
+					})
+				});
 				that.core_block = response.data.block
 				that.core_rtls_attempts = response.data.rtls_attempts
 				that.core_rtls_landings = response.data.rtls_landings

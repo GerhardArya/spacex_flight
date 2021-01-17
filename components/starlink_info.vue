@@ -33,13 +33,8 @@
     		<v-col cols="3">
 					<b>Launch:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="starlink_launch"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="starlink_launch.link">{{ starlink_launch.id }}</a>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
@@ -738,62 +733,15 @@ export default {
 	},
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'starlink') {
-				axios.get('https://api.spacexdata.com/v4/starlink/'+this.$route.params.id)
-      	.then(function (response) {
-					that.starlink_id = response.data.id
-					that.starlink_version = response.data.version
-					that.starlink_launch = response.data.launch
-					that.starlink_latitude = response.data.latitude
-					that.starlink_longitude = response.data.longitude
-					that.starlink_height = response.data.height_km
-					that.starlink_velocity = response.data.velocity_kms
-					that.starlink_CCSDS_OMM_VERS = response.data.spaceTrack.CCSDS_OMM_VERS
-					that.starlink_COMMENT = response.data.spaceTrack.COMMENT
-					that.starlink_CREATION_DATE = response.data.spaceTrack.CREATION_DATE
-					that.starlink_ORIGINATOR = response.data.spaceTrack.ORIGINATOR
-					that.starlink_OBJECT_NAME = response.data.spaceTrack.OBJECT_NAME
-					that.starlink_OBJECT_ID = response.data.spaceTrack.OBJECT_ID
-					that.starlink_CENTER_NAME = response.data.spaceTrack.CENTER_NAME
-					that.starlink_REF_FRAME = response.data.spaceTrack.REF_FRAME
-					that.starlink_TIME_SYSTEM = response.data.spaceTrack.TIME_SYSTEM
-					that.starlink_MEAN_ELEMENT_THEORY = response.data.spaceTrack.MEAN_ELEMENT_THEORY
-					that.starlink_EPOCH = response.data.spaceTrack.EPOCH
-					that.starlink_MEAN_MOTION = response.data.spaceTrack.MEAN_MOTION
-					that.starlink_ECCENTRICITY = response.data.spaceTrack.ECCENTRICITY
-					that.starlink_INCLINATION = response.data.spaceTrack.INCLINATION
-					that.starlink_RA_OF_ASC_NODE = response.data.spaceTrack.RA_OF_ASC_NODE
-					that.starlink_ARG_OF_PERICENTER = response.data.spaceTrack.ARG_OF_PERICENTER
-					that.starlink_MEAN_ANOMALY = response.data.spaceTrack.MEAN_ANOMALY
-					that.starlink_EPHEMERIS_TYPE = response.data.spaceTrack.EPHEMERIS_TYPE
-					that.starlink_CLASSIFICATION_TYPE = response.data.spaceTrack.CLASSIFICATION_TYPE
-					that.starlink_NORAD_CAT_ID = response.data.spaceTrack.NORAD_CAT_ID
-					that.starlink_ELEMENT_SET_NO = response.data.spaceTrack.ELEMENT_SET_NO
-					that.starlink_REV_AT_EPOCH = response.data.spaceTrack.REV_AT_EPOCH
-					that.starlink_BSTAR = response.data.spaceTrack.BSTAR
-					that.starlink_MEAN_MOTION_DOT = response.data.spaceTrack.MEAN_MOTION_DOT
-					that.starlink_MEAN_MOTION_DDOT = response.data.spaceTrack.MEAN_MOTION_DDOT
-					that.starlink_SEMIMAJOR_AXIS = response.data.spaceTrack.SEMIMAJOR_AXIS
-					that.starlink_PERIOD = response.data.spaceTrack.PERIOD
-					that.starlink_APOAPSIS = response.data.spaceTrack.APOAPSIS
-					that.starlink_PERIAPSIS = response.data.spaceTrack.PERIAPSIS
-					that.starlink_OBJECT_TYPE = response.data.spaceTrack.OBJECT_TYPE
-					that.starlink_RCS_SIZE = response.data.spaceTrack.RCS_SIZE
-					that.starlink_COUNTRY_CODE = response.data.spaceTrack.COUNTRY_CODE
-					that.starlink_LAUNCH_DATE = response.data.spaceTrack.LAUNCH_DATE
-					that.starlink_SITE = response.data.spaceTrack.SITE
-					that.starlink_DECAY_DATE = response.data.spaceTrack.DECAY_DATE
-					that.starlink_DECAYED = response.data.spaceTrack.DECAYED
-					that.starlink_FILE = response.data.spaceTrack.FILE
-					that.starlink_GP_ID = response.data.spaceTrack.GP_ID
-					that.starlink_TLE_LINE0 = response.data.spaceTrack.TLE_LINE0
-					that.starlink_TLE_LINE1 = response.data.spaceTrack.TLE_LINE1
-					that.starlink_TLE_LINE2 = response.data.spaceTrack.TLE_LINE2
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'starlink') {
+				that.starlink_id = that.$route.params.id
+				that.loadStarlink()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'starlink') {
+				that.starlink_id = that.$route.query.id
+				that.loadStarlink()
 			}
 		}
 	},
@@ -803,7 +751,10 @@ export default {
 			axios.get('https://api.spacexdata.com/v4/starlink/'+this.starlink_id)
       .then(function (response) {
 				that.starlink_version = response.data.version
-				that.starlink_launch = response.data.launch
+				that.starlink_launch = {
+					id: response.data.launch,
+					link: "/details?id="+response.data.launch+"&type=launch"
+				}
 				that.starlink_latitude = response.data.latitude
 				that.starlink_longitude = response.data.longitude
 				that.starlink_height = response.data.height_km

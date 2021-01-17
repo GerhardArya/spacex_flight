@@ -81,17 +81,14 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Google Maps:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="launchpad_google_maps"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="launchpad_google_maps" target="_blank" v-if="launchpad_google_maps !== ''">
+						<v-icon size="20px">{{ 'mdi-google-maps' }}</v-icon>
+					</a>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
@@ -133,34 +130,24 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Launches:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="launchpad_launches"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in launchpad_launches" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Rockets:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="launchpad_rockets"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in launchpad_rockets" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
     </v-col>
@@ -170,7 +157,7 @@
 <script>
 const axios = require('axios');
 export default {
-	name: 'LaunchpadMap',
+	name: 'LaunchpadInfo',
 	components: {
 		
 	},
@@ -192,26 +179,15 @@ export default {
 	},
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'launchpad') {
-				axios.get('https://api.spacexdata.com/v4/launchpads/'+this.$route.params.id)
-      	.then(function (response) {
-					that.launchpad_id = response.data.id
-					that.launchpad_name = response.data.name
-					that.launchpad_full_name = response.data.full_name
-					that.launchpad_status = response.data.status
-					that.launchpad_locality = response.data.locality
-					that.launchpad_region = response.data.region
-					that.launchpad_google_maps = "https://www.google.com/maps/@?api=1&map_action=map&basemap=satellite&center="+response.data.latitude+","+response.data.longitude
-					that.launchpad_time_zone = response.data.timezone
-					that.launchpad_launch_attempts = response.data.launch_attempts
-					that.launchpad_launch_successes = response.data.launch_successes
-					that.launchpad_launches = response.data.launches
-					that.launchpad_rockets = response.data.rockets
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'launchpad') {
+				that.launchpad_id = that.$route.params.id
+				that.loadLaunchpad()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'launchpad') {
+				that.launchpad_id = that.$route.query.id
+				that.loadLaunchpad()
 			}
 		}
 	},
@@ -229,8 +205,18 @@ export default {
 				that.launchpad_time_zone = response.data.timezone
 				that.launchpad_launch_attempts = response.data.launch_attempts
 				that.launchpad_launch_successes = response.data.launch_successes
-				that.launchpad_launches = response.data.launches
-				that.launchpad_rockets = response.data.rockets
+				response.data.launches.forEach(launchID => {
+					that.launchpad_launches.push({
+						id: launchID,
+						link: "/details?id="+launchID+"&type=launch"
+					})
+				});
+				response.data.rockets.forEach(rocketID => {
+					that.launchpad_rockets.push({
+						id: rocketID,
+						link: "/details?id="+rocketID+"&type=rocket"
+					})
+				});
       })
       .catch(function (error) {
         console.log(error);

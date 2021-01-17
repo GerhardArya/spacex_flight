@@ -55,19 +55,14 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Launches:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="capsule_launches"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in capsule_launches" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
@@ -109,7 +104,7 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Last update:</b>
 				</v-col>
@@ -150,23 +145,15 @@ export default {
 	},
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'capsule') {
-				axios.get('https://api.spacexdata.com/v4/capsules/'+this.$route.params.id)
-      	.then(function (response) {
-					that.capsule_id = response.data.id
-					that.capsule_serial = response.data.serial
-					that.capsule_type = response.data.type
-					that.capsule_status = response.data.status
-					that.capsule_launches = response.data.launches
-					that.capsule_land_landings = response.data.land_landings
-					that.capsule_water_landings = response.data.water_landings
-					that.capsule_reuse = response.data.reuse_count
-					that.capsule_last_update = response.data.last_update
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'capsule') {
+				that.capsule_id = that.$route.params.id
+				that.loadCapsule()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'capsule') {
+				that.capsule_id = that.$route.query.id
+				that.loadCapsule()
 			}
 		}
 	},
@@ -178,7 +165,12 @@ export default {
 				that.capsule_serial = response.data.serial
 				that.capsule_type = response.data.type
 				that.capsule_status = response.data.status
-				that.capsule_launches = response.data.launches
+				response.data.launches.forEach(launchID => {
+					that.capsule_launches.push({
+						id: launchID,
+						link: "/details?id="+launchID+"&type=launch"
+					})
+				});
 				that.capsule_land_landings = response.data.land_landings
 				that.capsule_water_landings = response.data.water_landings
 				that.capsule_reuse = response.data.reuse_count

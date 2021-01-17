@@ -98,13 +98,10 @@
     		<v-col cols="3">
 					<b>Google Maps:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="landpad_google_maps"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="landpad_google_maps" target="_blank" v-if="landpad_google_maps !== ''">
+						<v-icon size="20px">{{ 'mdi-google-maps' }}</v-icon>
+					</a>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
@@ -138,17 +135,12 @@
 					<b>Launches:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="landpad_launches"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in landpad_launches" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Details:</b>
 				</v-col>
@@ -167,13 +159,10 @@
     		<v-col cols="3">
 					<b>Wikipedia:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="landpad_wiki"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="landpad_wiki" target="_blank" v-if="landpad_wiki !== ''">
+						<v-icon size="20px">{{ 'mdi-wikipedia' }}</v-icon>
+					</a>
 				</v-col>
 			</v-row>
     </v-col>
@@ -206,27 +195,15 @@ export default {
 	},
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'landpad') {
-				axios.get('https://api.spacexdata.com/v4/landpads/'+this.$route.params.id)
-      	.then(function (response) {
-					that.landpad_id = response.data.id
-					that.landpad_name = response.data.name
-					that.landpad_full_name = response.data.full_name
-					that.landpad_type = response.data.type
-					that.landpad_status = response.data.status
-					that.landpad_locality = response.data.locality
-					that.landpad_region = response.data.region
-					that.landpad_google_maps = "https://www.google.com/maps/@?api=1&map_action=map&basemap=satellite&center="+response.data.latitude+","+response.data.longitude
-					that.landpad_landing_attempts = response.data.landing_attempts
-					that.landpad_landing_successes = response.data.landing_successes
-					that.landpad_launches = response.data.launches
-					that.landpad_details = response.data.details
-					that.landpad_wiki = response.data.wikipedia
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'landpad') {
+				that.landpad_id = that.$route.params.id
+				that.loadLandpad()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'landpad') {
+				that.landpad_id = that.$route.query.id
+				that.loadLandpad()
 			}
 		}
 	},
@@ -244,7 +221,12 @@ export default {
 				that.landpad_google_maps = "https://www.google.com/maps/@?api=1&map_action=map&basemap=satellite&center="+response.data.latitude+","+response.data.longitude
 				that.landpad_landing_attempts = response.data.landing_attempts
 				that.landpad_landing_successes = response.data.landing_successes
-				hat.landpad_launches = response.data.launches
+				response.data.launches.forEach(launchID => {
+					that.landpad_launches.push({
+						id: launchID,
+						link: "/details?id="+launchID+"&type=launch"
+					})
+				});
 				that.landpad_details = response.data.details
 				that.landpad_wiki = response.data.wikipedia
       })

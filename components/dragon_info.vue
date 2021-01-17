@@ -241,7 +241,7 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Trunk Cargo:</b>
 				</v-col>
@@ -256,7 +256,7 @@
         	></v-textarea>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Heatshield:</b>
 				</v-col>
@@ -271,7 +271,7 @@
         	></v-textarea>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Thrusters:</b>
 				</v-col>
@@ -286,7 +286,7 @@
         	></v-textarea>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Description:</b>
 				</v-col>
@@ -305,13 +305,10 @@
     		<v-col cols="3">
 					<b>Wikipedia:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="dragon_wiki"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="dragon_wiki" target="_blank" v-if="dragon_wiki !== ''">
+						<v-icon size="20px">{{ 'mdi-wikipedia' }}</v-icon>
+					</a>
 				</v-col>
 			</v-row>
     </v-col>
@@ -362,37 +359,15 @@ export default {
   },
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'dragon') {
-				axios.get('https://api.spacexdata.com/v4/dragons/'+this.$route.params.id)
-      	.then(function (response) {
-					that.dragon_id = response.data.id
-					that.dragon_name = response.data.name
-					that.dragon_type = response.data.type
-					that.dragon_status = (response.data.active) ? 'active' : 'inactive'
-					that.dragon_photo = response.data.flickr_images[0]
-					that.dragon_first_flight = response.data.first_flight
-					that.dragon_crew_capacity = response.data.crew_capacity
-					that.dragon_orbit_duration = response.data.orbit_duration_yr
-					that.dragon_height_trunk = response.data.height_w_trunk.meters
-					that.dragon_diameter = response.data.diameter.meters
-					that.dragon_sidewall_angle = response.data.sidewall_angle_deg
-					that.dragon_dry_mass = response.data.dry_mass_kg
-					that.dragon_launch_payload_mass = response.data.launch_payload_mass.kg
-					that.dragon_launch_payload_vol = response.data.launch_payload_vol.cubic_meters
-					that.dragon_return_payload_mass = response.data.return_payload_mass.kg
-					that.dragon_return_payload_vol = response.data.return_payload_vol.cubic_meters
-					that.dragon_pressurized_capsule_payload_vol = response.data.pressurized_capsule.payload_volume.cubic_meters
-					that.dragon_trunk_vol = response.data.trunk.trunk_volume.cubic_meters
-					that.dragon_trunk_cargo = JSON.stringify(response.data.trunk.cargo, null, 2)
-					that.dragon_heatshield = JSON.stringify(response.data.heat_shield, null, 2)
-					that.dragon_thrusters = JSON.stringify(response.data.thrusters, null, 2)
-					that.dragon_description = response.data.description
-					that.dragon_wiki = response.data.wikipedia
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'dragon') {
+				that.dragon_id = that.$route.params.id
+				that.loadDragon()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'dragon') {
+				that.dragon_id = that.$route.query.id
+				that.loadDragon()
 			}
 		}
 	},

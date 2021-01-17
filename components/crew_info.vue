@@ -72,32 +72,24 @@
 					</v-row>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Launches:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="crew_launches"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in crew_launches" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
     		<v-col cols="3">
 					<b>Wikipedia:</b>
 				</v-col>
-				<v-col cols="9">
-					<v-text-field
-            :value="crew_wiki"
-            solo
-            readonly
-						hide-details
-          ></v-text-field>
+				<v-col cols="9" class="px-3 py-2">
+					<a :href="crew_wiki" target="_blank" v-if="crew_wiki !== ''">
+						<v-icon size="20px">{{ 'mdi-wikipedia' }}</v-icon>
+					</a>
 				</v-col>
 			</v-row>
     </v-col>
@@ -132,21 +124,15 @@ export default {
   },
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'crew') {
-				axios.get('https://api.spacexdata.com/v4/crew/'+this.$route.params.id)
-      	.then(function (response) {
-					that.crew_id = response.data.id
-					that.crew_name = response.data.name
-					that.crew_agency = response.data.agency
-					that.crew_status = response.data.status
-					that.crew_photo = response.data.image
-					that.crew_launches = response.data.launches
-					that.crew_wiki = response.data.wikipedia
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'crew') {
+				that.crew_id = that.$route.params.id
+				that.loadCrew()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'crew') {
+				that.crew_id = that.$route.query.id
+				that.loadCrew()
 			}
 		}
 	},
@@ -162,7 +148,12 @@ export default {
 				that.crew_agency = response.data.agency
 				that.crew_status = response.data.status
 				that.crew_photo = response.data.image
-				that.crew_launches = response.data.launches
+				response.data.launches.forEach(launchID => {
+					that.crew_launches.push({
+						id: launchID,
+						link: "/details?id="+launchID+"&type=launch"
+					})
+				});
 				that.crew_wiki = response.data.wikipedia
       })
       .catch(function (error) {

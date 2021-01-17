@@ -451,6 +451,9 @@
               <template v-slot:item.id="{item}">
                 <NuxtLink :to="{name: 'details', params: { id: item.id, type: 'starlink' } }">{{ item.id }}</NuxtLink>
               </template>
+              <template v-slot:item.launch="{item}">
+                <NuxtLink :to="{name: 'details', params: { id: item.launch, type: 'launch' } }">{{ item.launch }}</NuxtLink>
+              </template>
             </v-data-table>
           </v-card>
         </v-col>

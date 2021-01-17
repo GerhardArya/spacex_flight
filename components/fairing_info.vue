@@ -107,19 +107,14 @@
           ></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="start" align="center">
+			<v-row justify="start" align="top">
     		<v-col cols="3">
 					<b>Launches:</b>
 				</v-col>
 				<v-col cols="9">
-					<v-textarea
-						:value="fairing_launches"
-						height="144"
-          	solo
-            readonly
-						no-resize
-						hide-details
-        	></v-textarea>
+					<v-row v-for="item in fairing_launches" class="px-3 py-2">
+						<a :href="item.link">{{ item.id }}</a>
+					</v-row>
 				</v-col>
 			</v-row>
 			<v-row justify="start" align="center">
@@ -162,24 +157,15 @@ export default {
 	},
 	mounted(){
 		var that = this
-		if(Object.keys(this.$route.params).length > 0){
-			if(this.$route.params.type === 'fairing') {
-				axios.get('https://api.spacexdata.com/v4/fairings/'+this.$route.params.id)
-      	.then(function (response) {
-					that.fairing_serial = response.data.serial
-					that.fairing_version = response.data.version
-					that.fairing_status = response.data.status
-					that.fairing_reuse = response.data.reuse_count
-					that.fairing_net_landing_attempts = response.data.net_landing_attempts
-					that.fairing_net_landing_successes = response.data.net_landing
-					that.fairing_water_landing_attempts = response.data.water_landing_attempts
-					that.fairing_water_landing_successes = response.data.water_landing
-					that.fairing_launches = response.data.launches
-					that.fairing_last_update = response.data.last_update
-      	})
-      	.catch(function (error) {
-        	console.log(error);
-      	})
+		if(Object.keys(that.$route.params).length > 0){
+			if(that.$route.params.type === 'fairing') {
+				that.fairing_serial = that.$route.params.id
+				that.loadFairing()
+			}
+		} else if(Object.keys(that.$route.query).length > 0){
+			if(that.$route.query.type === 'fairing') {
+				that.fairing_serial = that.$route.query.id
+				that.loadFairing()
 			}
 		}
 	},
@@ -195,7 +181,12 @@ export default {
 				that.fairing_net_landing_successes = response.data.net_landing
 				that.fairing_water_landing_attempts = response.data.water_landing_attempts
 				that.fairing_water_landing_successes = response.data.water_landing
-				that.fairing_launches = response.data.launches
+				response.data.launches.forEach(launchID => {
+					that.fairing_launches.push({
+						id: launchID,
+						link: "/details?id="+launchID+"&type=launch"
+					})
+				});
 				that.fairing_last_update = response.data.last_update
       })
       .catch(function (error) {
