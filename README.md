@@ -36,4 +36,4 @@ Using console:
 
 ## Note
 * The Fairings endpoint of the API seems to provide nothing, this is not an error of the web application
-* Two svg map chart components exist in the project directory. This is an unfinished component for the dashboard, feature cut due to time constraints.
+* Two svg map chart components exist in the project directory. They are unfinished components for the dashboard, features cut due to time constraints.
